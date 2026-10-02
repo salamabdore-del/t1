@@ -17,15 +17,23 @@ app.post('/chat', async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile', // نموذج قوي وسريع جداً من Groq
+        model: 'llama-3.1-8b-instant',
         messages: [{ role: 'user', content: message }]
       })
     });
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || 'عذراً، حدث خطأ في الرد.';
-    res.json({ reply });
+    console.log('Groq API Response:', JSON.stringify(data));
+
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      res.json({ reply: data.choices[0].message.content });
+    } else {
+      // إظهار سبب الخطأ القادم من Groq مباشرة
+      const errorMsg = data.error?.message || 'استجابة غير متوقعة من Groq';
+      res.json({ reply: `خطأ من Groq: ${errorMsg}` });
+    }
   } catch (error) {
+    console.error('Server Error:', error);
     res.status(500).json({ error: 'خطأ في الاتصال بالسيرفر' });
   }
 });
