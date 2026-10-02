@@ -21,7 +21,7 @@ app.post('/chat', async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'mixtral-8x7b-32768',
+        llama-3.3-70b-versatile
         messages: [
           { role: 'system', content: 'أنت مساعد ذكي ومفيد وتجيب دائماً باللغة العربية بأسلوب واضح ومباشر.' },
           { role: 'user', content: message }
