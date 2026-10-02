@@ -21,7 +21,7 @@ app.post('/chat', async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
+        model: 'gemma2-9b-it',
         messages: [
           { role: 'system', content: 'أنت مساعد ذكي ومفيد وتجيب دائماً باللغة العربية بأسلوب واضح ومباشر.' },
           { role: 'user', content: message }
