@@ -9,6 +9,10 @@ app.post('/chat', async (req, res) => {
   const { message } = req.body;
   const apiKey = process.env.GROQ_API_KEY;
 
+  if (!apiKey) {
+    return res.json({ reply: 'خطأ: مفتاح GROQ_API_KEY غير موجود في متغيرات البيئة على Render.' });
+  }
+
   try {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -17,18 +21,19 @@ app.post('/chat', async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: [{ role: 'user', content: message }]
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: 'أنت مساعد ذكي ومفيد وتجيب دائماً باللغة العربية بأسلوب واضح ومباشر.' },
+          { role: 'user', content: message }
+        ]
       })
     });
 
     const data = await response.json();
-    console.log('Groq API Response:', JSON.stringify(data));
 
     if (data.choices && data.choices[0] && data.choices[0].message) {
       res.json({ reply: data.choices[0].message.content });
     } else {
-      // إظهار سبب الخطأ القادم من Groq مباشرة
       const errorMsg = data.error?.message || 'استجابة غير متوقعة من Groq';
       res.json({ reply: `خطأ من Groq: ${errorMsg}` });
     }
